@@ -4,7 +4,7 @@ const bcrypt=require('bcrypt');
 const register=async(req,res)=>{
     try{
         const {user,pwd,email}=req.body;
-        if(!req?.body?.user||!req?.body?.pwd){return res.status(401).json({'message':'user and pwd required'})};
+        if(!req?.body?.user||!req?.body?.pwd){return res.status(400).json({'message':'user and pwd required'})};
         const hashedPwd=await bcrypt.hash(pwd,10);
         const newUser=await User.create({
             name:user,
