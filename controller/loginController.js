@@ -13,7 +13,7 @@ const login=async(req,res)=>{
         if (user && email) {
             foundUser = await User.findOne({
                 name: user,
-                email: email
+                email
             }).exec();
         } else if (user) {
             foundUser = await User.findOne({

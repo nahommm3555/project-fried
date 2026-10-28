@@ -15,6 +15,7 @@ app.use(cookieParser());
 app.use('/api/register',require('./routes/register'));
 app.use('/api/login',require('./routes/login'));
 app.use('/api/refresh',require('./routes/refresh'));
+app.use('/api/logout',require('./routes/logout'));
 
 app.use((req, res) => {
     console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
