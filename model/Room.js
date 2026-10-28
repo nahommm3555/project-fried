@@ -4,7 +4,8 @@ const Schema=mongoose.Schema;
 const roomSchema=new Schema({
     roomNumber:{
         type:Number,
-        required: true
+        required: true,
+        unique: true
     },
     type:{
         type: String,

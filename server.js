@@ -4,6 +4,7 @@ const cookieParser=require('cookie-parser');
 const app=express();
 const mongoose=require('mongoose');
 const dbConn=require('./config/dbConn');
+const verifyJwt=require('./middleware/verifyJWT');
 const PORT=process.env.PORT||3500;
 
 dbConn();
@@ -16,6 +17,9 @@ app.use('/api/register',require('./routes/register'));
 app.use('/api/login',require('./routes/login'));
 app.use('/api/refresh',require('./routes/refresh'));
 app.use('/api/logout',require('./routes/logout'));
+
+app.use(verifyJwt);
+app.use('/api/rooms',require('./routes/api/rooms'));
 
 app.use((req, res) => {
     console.log(`404 - Route not found: ${req.method} ${req.originalUrl}`);
