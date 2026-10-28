@@ -27,7 +27,9 @@ const login=async(req,res)=>{
         if(!foundUser){return res.status(401).json({'message':'Invalid username/email or password'})}
         const match= await bcrypt.compare(pwd,foundUser.password);
         if(match){
+            const roles=Object.values(foundUser.roles);
             const accessToken=jwt.sign({"user-info":{
+                "roles":roles,
                 "name":foundUser.name,
                 "email":foundUser.email
             }},
