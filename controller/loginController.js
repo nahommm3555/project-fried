@@ -1,6 +1,8 @@
 const User=require('../model/User');
 const bcrypt=require('bcrypt');
 
+const jwt=require('jsonwebtoken');
+
 const login=async(req,res)=>{
     try{
         const {user,pwd,email}=req.body;
@@ -24,8 +26,27 @@ const login=async(req,res)=>{
         }
         if(!foundUser){return res.status(401).json({'message':'Invalid username/email or password'})}
         const match= await bcrypt.compare(pwd,foundUser.password);
-        if(!match){return res.status(401).json({'message':'Invalid username/email or password'})}
-        res.status(200).json({'message':`user ${foundUser.name} succefully logged in`});
+        if(match){
+            const accessToken=jwt.sign({"user-info":{
+                "name":foundUser.name,
+                "email":foundUser.email
+            }},
+            process.env.ACCESS_TOKEN_SECRET,
+            {expiresIn:'15m'}
+            )
+            const refreshToken=jwt.sign({"userInfo":{
+                "name":foundUser.name,
+                "email":foundUser.email
+            }},
+            process.env.REFRESH_TOKEN_SECRET,
+            {expiresIn:'1d'}
+            )
+            foundUser.refreshToken=refreshToken;
+            const result= await foundUser.save();
+            res.cookie('jwt',refreshToken,{httpOnly:true,sameSite:'none',maxAge:24*60*60*1000});
+            res.json({accessToken});
+        }
+        else{return res.status(401)}
     }catch(err){
         console.error(err);
         res.status(500).json({message:err.message})
