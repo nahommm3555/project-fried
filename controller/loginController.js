@@ -28,7 +28,8 @@ const login=async(req,res)=>{
         const match= await bcrypt.compare(pwd,foundUser.password);
         if(match){
             const roles=Object.values(foundUser.roles);
-            const accessToken=jwt.sign({"user-info":{
+            const accessToken=jwt.sign({"userInfo":{
+                "id":foundUser._id,
                 "roles":roles,
                 "name":foundUser.name,
                 "email":foundUser.email
@@ -47,6 +48,7 @@ const login=async(req,res)=>{
             const result= await foundUser.save();
             res.cookie('jwt',refreshToken,{httpOnly:true,sameSite:'none',maxAge:24*60*60*1000});
             res.json({accessToken});
+            console.log(accessToken);
         }
         else{return res.status(401)}
     }catch(err){

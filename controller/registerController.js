@@ -7,6 +7,7 @@ const register=async(req,res)=>{
         if(!req?.body?.user||!req?.body?.pwd){return res.status(400).json({'message':'user and pwd required'})};
         const hashedPwd=await bcrypt.hash(pwd,10);
         const newUser=await User.create({
+            roles:2006,
             name:user,
             password:hashedPwd,
             email
